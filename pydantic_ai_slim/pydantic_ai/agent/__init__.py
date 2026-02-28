@@ -1493,12 +1493,15 @@ class Agent(AbstractAgent[AgentDepsT, OutputDataT]):
 
         If we've overridden deps via `_override_deps`, use that, otherwise use the deps passed to the call.
 
-        We could do runtime type checking of deps against `self._deps_type`, but that's a slippery slope.
+        We also validate that the deps match the declared `deps_type` at runtime.
         """
         if some_deps := self._override_deps.get():
-            return some_deps.value
-        else:
-            return deps
+            deps = some_deps.value
+        if self._deps_type is not NoneType and deps is not None and not isinstance(deps, self._deps_type):
+            raise exceptions.UserError(
+                f'deps must be an instance of {self._deps_type.__name__}, got {type(deps).__name__}'
+            )
+        return deps
 
     def _normalize_instructions(
         self,
