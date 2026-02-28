@@ -137,7 +137,12 @@ try:
         BetaWebSearchToolResultBlockParam,
         BetaWebSearchToolResultBlockParamContentParam,
     )
-    from anthropic.types.beta.beta_user_location_param import BetaUserLocationParam
+    try:
+        from anthropic.types.beta.beta_user_location_param import BetaUserLocationParam
+    except ImportError:
+        from anthropic.types.beta.beta_web_search_tool_20250305_param import (
+            UserLocation as BetaUserLocationParam,  # pyright: ignore[reportAssignmentType]
+        )
     from anthropic.types.beta.beta_web_fetch_tool_result_block_param import (
         Content as WebFetchToolResultBlockParamContent,
     )
