@@ -137,7 +137,18 @@ try:
         BetaWebSearchToolResultBlockParam,
         BetaWebSearchToolResultBlockParamContentParam,
     )
-    from anthropic.types.beta.beta_user_location_param import BetaUserLocationParam
+    # Anthropic SDK v0.80.0 moved and renamed `UserLocation` from
+    # `anthropic.types.beta.beta_web_search_tool_20250305_param` to
+    # `anthropic.types.beta.beta_user_location_param.BetaUserLocationParam`.
+    # The try/except ensures compatibility with both old (<0.80.0) and new (>=0.80.0) SDK versions.
+    try:
+        from anthropic.types.beta.beta_user_location_param import BetaUserLocationParam
+    except ImportError:
+        # Fallback for older Anthropic SDK versions where BetaUserLocationParam
+        # does not exist at the new module path.
+        from anthropic.types.beta.beta_web_search_tool_20250305_param import (
+            UserLocation as BetaUserLocationParam,  # pyright: ignore[reportAssignmentType]
+        )
     from anthropic.types.beta.beta_web_fetch_tool_result_block_param import (
         Content as WebFetchToolResultBlockParamContent,
     )
